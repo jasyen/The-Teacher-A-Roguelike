@@ -28,6 +28,7 @@ def main():
     con = libtcod.console_new(screen_width, screen_height)
 
     game_map = GameMap(map_width, map_height)
+    game_map.make_map()
 
     # Hold our keyboard and mouse input
     key = libtcod.Key()
@@ -37,14 +38,14 @@ def main():
     while not libtcod.console_is_window_closed():
         # Captures and updates user input of keyboard and mouse
         libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS, key, mouse)
-        print("Render")
+
         render_all(con, entities, game_map, screen_width, screen_height, colors)
         # Presents everything on the screen
         libtcod.console_flush()
-        print("Flushed")
+
         # Replaces old locations of entities with a space
         clear_all(con, entities)
-        print("Cleared")
+
         action = handle_keys(key)
 
         # Note that handle_keys returns a dictionary 
