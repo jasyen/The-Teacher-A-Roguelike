@@ -11,6 +11,14 @@ def handle_keys(key):
             return {'move': (-1, 0)}
         elif key.c == ord('d'):
             return {'move': (1, 0)}
+        elif key.c == ord('q'):
+            return {'move': (-1, -1)}
+        elif key.c == ord('e'):
+            return {'move': (1, -1)}
+        elif key.c == ord('z'):
+            return {'move': (-1, 1)}
+        elif key.c == ord('c'):
+            return {'move': (1, 1)}
     
     if key.vk == libtcod.KEY_ENTER and key.lalt:
         # Alt+Enter: toggles full screen
