@@ -12,3 +12,6 @@ class Entity:
         # Move the entity by given amount
         self.x += dx
         self.y += dy
+
+    def get_x(self):
+        return self.x

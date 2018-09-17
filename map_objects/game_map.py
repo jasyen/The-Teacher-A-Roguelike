@@ -1,5 +1,7 @@
+from random import randint
 from map_objects.rectangle import Rect
 from map_objects.tile import Tile
+
 
 class GameMap:
     def __init__(self, width, height):
@@ -13,13 +15,63 @@ class GameMap:
 
         return tiles
 
-    def make_map(self):
-        # Create two rooms for demo purposes
-        room1 = Rect(20, 15, 10, 15)
-        room2 = Rect(35, 15, 10, 15)
+    # Generates the dungeon
+    def make_map(self, max_rooms, room_min_size, room_max_size, map_width, map_height, player):
+        rooms = []
+        num_rooms = 0
 
-        self.create_room(room1)
-        self.create_room(room2)
+        for r in range(max_rooms):
+            # random width and height
+            w = randint(room_min_size, room_max_size)
+            h = randint(room_min_size, room_max_size)
+            # random position without going out of the boundaries of map
+            x = randint(0, map_width - w - 1)
+            y = randint(0, map_height - h - 1)
+
+            # Rect class makes rectangles easier to work with
+            new_room = Rect(x, y, w, h)
+
+            # Run through the other rooms to see if they intersect with this one
+            for other_room in rooms:
+                if new_room.intersect(other_room):
+                    break
+            # If for loop does not break, do this
+            else:
+                # This means there are no intersections, so this room is valid
+
+                # "Paint" it to the map's tiles
+                self.create_room(new_room)
+
+                # Center coordinates of new room
+                (new_x, new_y) = new_room.center()
+
+                if num_rooms == 0:
+                    # This is the first room, where the player starts at
+                    print(new_x)
+                    print(new_y)
+                    player.x = new_x
+                    player.y = new_y
+                else:
+                    # All rooms after the first:
+                    # connect it to the previous rooms room with a tunnel
+
+                    # Center coordinates of previous room
+                    (prev_x, prev_y) = rooms[num_rooms -1].center()
+
+                    # Adds a bit of variety in tunnels
+                    if randint(0, 1) == 1:
+                        # tunnel starts horizontally, then vertically
+                        self.create_h_tunnel(prev_x, new_x, prev_y)
+                        self.create_v_tunnel(prev_y, new_y, new_x)
+                    else:
+                        # tunnel starts vertically, then horizontally
+                        self.create_v_tunnel(prev_y, new_y, prev_x)
+                        self.create_h_tunnel(prev_x, new_x, new_y)
+
+                # Append new room to the list
+                rooms.append(new_room)
+                
+                num_rooms += 1
 
     # Carves out a room by setting tiles to not be blocked given a rectangle
     def create_room(self, room):
@@ -29,6 +81,16 @@ class GameMap:
             for y in range(room.y1 + 1, room.y2):
                 self.tiles[x][y].blocked = False
                 self.tiles[x][y].block_sight = False
+
+    def create_h_tunnel(self, x1, x2, y):
+        for x in range(min(x1, x2), max(x1, x2) + 1):
+            self.tiles[x][y].blocked = False
+            self.tiles[x][y].block_sight = False
+
+    def create_v_tunnel(self, y1, y2, x):
+        for y in range(min(y1, y2), max(y1, y2) + 1):
+            self.tiles[x][y].blocked = False
+            self.tiles[x][y].block_sight = False
 
     def is_blocked(self, x, y):
         if self.tiles[x][y].blocked:

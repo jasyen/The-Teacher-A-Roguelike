@@ -11,6 +11,10 @@ def main():
     map_width = 80
     map_height = 45
 
+    room_max_size = 10
+    room_min_size = 6
+    max_rooms = 30
+
     colors = {
         'dark_wall': libtcod.Color(0, 0, 100),
         'dark_ground': libtcod.Color(50, 50, 150)
@@ -28,12 +32,12 @@ def main():
     con = libtcod.console_new(screen_width, screen_height)
 
     game_map = GameMap(map_width, map_height)
-    game_map.make_map()
+    game_map.make_map(max_rooms, room_min_size, room_max_size, map_width, map_height, player)
 
     # Hold our keyboard and mouse input
     key = libtcod.Key()
     mouse = libtcod.Mouse()
-
+    
     # This while loop is our 'game loop', won't end unless we close screen
     while not libtcod.console_is_window_closed():
         # Captures and updates user input of keyboard and mouse
