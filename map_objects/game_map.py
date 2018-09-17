@@ -47,8 +47,6 @@ class GameMap:
 
                 if num_rooms == 0:
                     # This is the first room, where the player starts at
-                    print(new_x)
-                    print(new_y)
                     player.x = new_x
                     player.y = new_y
                 else:
